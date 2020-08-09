@@ -8,7 +8,7 @@ import pl.arciemowicz.adversity.domain.AnalyticsData;
 public class AnalyticsController {
 
     @GetMapping("/data")
-    public AnalyticsData analyticsData() {
+    public AnalyticsData analyticsData(AnalyticsCriteria analyticsCriteria) {
         return new AnalyticsData();
     }
 }

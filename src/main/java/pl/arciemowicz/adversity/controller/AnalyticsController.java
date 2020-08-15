@@ -10,22 +10,22 @@ import java.time.LocalDate;
 @RestController("/api/analytics")
 public class AnalyticsController {
 
-    @GetMapping("/data")
+    @GetMapping("/")
     public AnalyticsData analyticsData(AnalyticsCriteria analyticsCriteria) {
         return new AnalyticsData();
     }
 
-    @GetMapping("/data/totalClicks")
+    @GetMapping("/totalClicks")
     public AnalyticsData totalClicks(@RequestParam LocalDate dateFrom, @RequestParam LocalDate dateTo, @RequestParam String dataSource, AnalyticsCriteria analyticsCriteria) {
         return new AnalyticsData();
     }
 
-    @GetMapping("/data/ctr")
+    @GetMapping("/ctr")
     public AnalyticsData ctr(AnalyticsCriteria analyticsCriteria) {
         return new AnalyticsData();
     }
 
-    @GetMapping("/data/impressions")
+    @GetMapping("/impressions")
     public AnalyticsData impressions(AnalyticsCriteria analyticsCriteria) {
         return new AnalyticsData();
     }

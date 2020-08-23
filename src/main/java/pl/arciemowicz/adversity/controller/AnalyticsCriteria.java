@@ -1,7 +1,7 @@
 package pl.arciemowicz.adversity.controller;
 
-import pl.arciemowicz.adversity.domain.Dimensions;
-import pl.arciemowicz.adversity.domain.Metrics;
+import pl.arciemowicz.adversity.domain.dto.Dimensions;
+import pl.arciemowicz.adversity.domain.dto.Metrics;
 import lombok.Data;
 
 @Data

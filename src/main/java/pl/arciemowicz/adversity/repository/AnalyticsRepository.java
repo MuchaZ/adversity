@@ -1,4 +1,7 @@
 package pl.arciemowicz.adversity.repository;
 
-public interface AnalyticsRepository {
+import org.springframework.data.mongodb.repository.MongoRepository;
+import pl.arciemowicz.adversity.domain.AnalyticsData;
+
+public interface AnalyticsRepository extends MongoRepository<AnalyticsData, String> {
 }

@@ -11,6 +11,7 @@ import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper;
 import org.springframework.batch.item.file.mapping.DefaultLineMapper;
 import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
@@ -19,14 +20,17 @@ import pl.arciemowicz.adversity.domain.AnalyticsData;
 
 @EnableBatchProcessing
 @Configuration
-public class Setup {
+public class CsvSetup {
+
+    @Value("${csv-file.column-names}")
+    private String[] columnNames;
 
     private final JobBuilderFactory jobBuilderFactory;
     private final StepBuilderFactory stepBuilderFactory;
 
     private final MongoTemplate mongoTemplate;
 
-    public Setup(JobBuilderFactory jobBuilderFactory, StepBuilderFactory stepBuilderFactory, MongoTemplate mongoTemplate) {
+    public CsvSetup(JobBuilderFactory jobBuilderFactory, StepBuilderFactory stepBuilderFactory, MongoTemplate mongoTemplate) {
         this.jobBuilderFactory = jobBuilderFactory;
         this.stepBuilderFactory = stepBuilderFactory;
         this.mongoTemplate = mongoTemplate;
@@ -51,7 +55,7 @@ public class Setup {
         reader.setLinesToSkip(1);
         reader.setLineMapper(new DefaultLineMapper<AnalyticsData>() {{
             setLineTokenizer(new DelimitedLineTokenizer() {{
-                setNames(new String[]{"datasource", "campaign", "date", "clicks", "impressions"});
+                setNames(columnNames);
 
             }});
             setFieldSetMapper(new BeanWrapperFieldSetMapper<AnalyticsData>() {{

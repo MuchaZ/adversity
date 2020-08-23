@@ -3,9 +3,11 @@ package pl.arciemowicz.adversity.service;
 import org.springframework.stereotype.Service;
 import pl.arciemowicz.adversity.controller.AnalyticsCriteria;
 import pl.arciemowicz.adversity.domain.AnalyticsData;
+import pl.arciemowicz.adversity.domain.dto.Impression;
 import pl.arciemowicz.adversity.repository.AnalyticsRepository;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -33,7 +35,7 @@ public class AnalyticsServiceImpl implements AnalyticsService {
     }
 
     @Override
-    public long getImpressionsOverTime(AnalyticsCriteria analyticsCriteria) {
-        return 0;
+    public List<Impression> getImpressionsOverTime(AnalyticsCriteria analyticsCriteria) {
+        return Collections.emptyList();
     }
 }

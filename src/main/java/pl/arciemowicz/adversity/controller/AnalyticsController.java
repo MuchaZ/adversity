@@ -1,11 +1,11 @@
 package pl.arciemowicz.adversity.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import pl.arciemowicz.adversity.domain.dto.AnalyticsDataDto;
+import pl.arciemowicz.adversity.domain.dto.Impression;
 import pl.arciemowicz.adversity.service.AnalyticsService;
 
 import java.time.LocalDate;
@@ -28,17 +28,17 @@ public class AnalyticsController {
     }
 
     @GetMapping("/totalClicks")
-    public AnalyticsDataDto totalClicks(@RequestParam LocalDate dateFrom, @RequestParam LocalDate dateTo, @RequestParam String dataSource, AnalyticsCriteria analyticsCriteria) {
-        return null;
+    public long totalClicks(@RequestParam LocalDate dateFrom, @RequestParam LocalDate dateTo, AnalyticsCriteria analyticsCriteria) {
+        return analyticsService.getTotalClicks(dateFrom, dateTo, analyticsCriteria);
     }
 
     @GetMapping("/ctr")
-    public AnalyticsDataDto ctr(AnalyticsCriteria analyticsCriteria) {
-        return null;
+    public long ctr(AnalyticsCriteria analyticsCriteria) {
+        return analyticsService.getCtr(analyticsCriteria);
     }
 
     @GetMapping("/impressions")
-    public AnalyticsDataDto impressions(AnalyticsCriteria analyticsCriteria) {
-        return null;
+    public List<Impression> impressions(AnalyticsCriteria analyticsCriteria) {
+        return analyticsService.getImpressionsOverTime(analyticsCriteria);
     }
 }

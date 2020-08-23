@@ -2,6 +2,7 @@ package pl.arciemowicz.adversity.service;
 
 import pl.arciemowicz.adversity.controller.AnalyticsCriteria;
 import pl.arciemowicz.adversity.domain.AnalyticsData;
+import pl.arciemowicz.adversity.domain.dto.Impression;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -14,5 +15,5 @@ public interface AnalyticsService {
 
     long getCtr(AnalyticsCriteria analyticsCriteria);
 
-    long getImpressionsOverTime(AnalyticsCriteria analyticsCriteria);
+    List<Impression> getImpressionsOverTime(AnalyticsCriteria analyticsCriteria);
 }

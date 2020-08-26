@@ -28,8 +28,9 @@ public class AnalyticsServiceImpl implements AnalyticsService {
     }
 
     @Override
-    public long getTotalClicks(LocalDate dateFrom, LocalDate dateTo, AnalyticsCriteria analyticsCriteria) {
-        return 0;
+    public List<AnalyticsData> getTotalClicks(LocalDate dateFrom, LocalDate dateTo, AnalyticsCriteria analyticsCriteria) {
+        AnalyticsCriteria.getCriteriaForRetrievingTotalClicks(analyticsCriteria);
+        return analyticsRepository.findAllBetweenDatesByCriteria(dateFrom, dateTo, analyticsCriteria);
     }
 
     @Override

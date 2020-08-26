@@ -2,17 +2,14 @@ package pl.arciemowicz.adversity.repository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.*;
 import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 import pl.arciemowicz.adversity.controller.AnalyticsCriteria;
 import pl.arciemowicz.adversity.domain.AnalyticsData;
-import pl.arciemowicz.adversity.domain.dto.Dimensions;
 
-import java.lang.reflect.Field;
+import java.time.LocalDate;
 import java.util.*;
 
 @Repository
@@ -20,6 +17,8 @@ public class AnalyticsRepositoryImpl implements AnalyticsRepositoryCustom {
 
     @Value("${database.collection-name}")
     private String databaseCollectionName;
+
+    private final String DATE_COLUMN_NAME = "date";
 
     private final MongoTemplate mongoTemplate;
 
@@ -31,6 +30,21 @@ public class AnalyticsRepositoryImpl implements AnalyticsRepositoryCustom {
     @Override
     public List<AnalyticsData> findAllByCriteria(AnalyticsCriteria analyticsCriteria) {
 
+        List<AggregationOperation> aggregationOperations = processGroupsFiltersAndMatchesFor(analyticsCriteria, Optional.empty(), Optional.empty());
+
+        return getResultsFor(aggregationOperations);
+    }
+
+    @Override
+    public List<AnalyticsData> findAllBetweenDatesByCriteria(LocalDate dateFrom, LocalDate dateTo, AnalyticsCriteria analyticsCriteria) {
+
+        List<AggregationOperation> aggregationOperations = processGroupsFiltersAndMatchesFor(analyticsCriteria, Optional.of(dateFrom), Optional.of(dateTo));
+
+        return getResultsFor(aggregationOperations);
+    }
+
+    private List<AggregationOperation> processGroupsFiltersAndMatchesFor(AnalyticsCriteria analyticsCriteria, Optional<LocalDate> dateFrom, Optional<LocalDate> dateTo) {
+
         List<AggregationOperation> aggregationOperations = new ArrayList<>();
 
         List<String> groupOn = new ArrayList<>(analyticsCriteria.getGroupByDimensions());
@@ -38,14 +52,14 @@ public class AnalyticsRepositoryImpl implements AnalyticsRepositoryCustom {
         projectedFields.addAll(groupOn);
         projectedFields.addAll(analyticsCriteria.getMetricsToBeAggregatedOn());
 
-        String EMPTY_GROUP = "_";
-        groupOn.add(EMPTY_GROUP);
-        GroupOperation groupOperation = Aggregation.group(groupOn.toArray(new String[0]));
+        if (!groupOn.isEmpty()) {
+            GroupOperation groupOperation = Aggregation.group(groupOn.toArray(new String[0]));
 
-        for (String metricToBeAggregatedOn : analyticsCriteria.getMetricsToBeAggregatedOn()) {
-            groupOperation = groupOperation.sum(metricToBeAggregatedOn).as(metricToBeAggregatedOn);
+            for (String metricToBeAggregatedOn : analyticsCriteria.getMetricsToBeAggregatedOn()) {
+                groupOperation = groupOperation.sum(metricToBeAggregatedOn).as(metricToBeAggregatedOn);
+            }
+            aggregationOperations.add(groupOperation);
         }
-        aggregationOperations.add(groupOperation);
 
         List<MatchOperation> matchOperations = new ArrayList<>();
         Map<String, String> dimensionsToFilterOn = analyticsCriteria.getFilterOnDimensions();
@@ -54,9 +68,26 @@ public class AnalyticsRepositoryImpl implements AnalyticsRepositoryCustom {
         }
 
         if (!projectedFields.isEmpty()) {
-            aggregationOperations.add(Aggregation.project(projectedFields.toArray(new String[0])));
+            ProjectionOperation projectionOperation;
+            if (dateFrom.isPresent() && dateTo.isPresent()) {
+                projectedFields.add("date");
+                projectionOperation = Aggregation.project(projectedFields.toArray(new String[0]));
+                projectionOperation
+                        .and(ComparisonOperators.Gte.valueOf(DateOperators.DateFromString.fromStringOf(DATE_COLUMN_NAME).withFormat("%m/%d/%Y"))).gte(dateFrom).as("match_date_from")
+                        .and(ComparisonOperators.Lte.valueOf(DateOperators.DateFromString.fromStringOf(DATE_COLUMN_NAME).withFormat("%m/%d/%Y"))).lte(dateTo).as("match_date_to");
+                matchOperations.add(Aggregation.match(Criteria.where("match_date_from").is(true)));
+                matchOperations.add(Aggregation.match(Criteria.where("match_date_to").is(true)));
+            } else {
+                projectionOperation = Aggregation.project(projectedFields.toArray(new String[0]));
+            }
+            aggregationOperations.add(projectionOperation);
             aggregationOperations.addAll(matchOperations);
         }
+
+        return aggregationOperations;
+    }
+
+    private List<AnalyticsData> getResultsFor(List<AggregationOperation> aggregationOperations) {
 
         AggregationResults<AnalyticsData> groupResults = mongoTemplate.aggregate(Aggregation.newAggregation(aggregationOperations), databaseCollectionName, AnalyticsData.class);
 

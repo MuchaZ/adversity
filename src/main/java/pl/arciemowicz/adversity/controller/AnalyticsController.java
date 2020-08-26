@@ -1,9 +1,11 @@
 package pl.arciemowicz.adversity.controller;
 
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import pl.arciemowicz.adversity.domain.AnalyticsData;
 import pl.arciemowicz.adversity.domain.dto.AnalyticsDataDto;
 import pl.arciemowicz.adversity.domain.dto.Impression;
 import pl.arciemowicz.adversity.service.AnalyticsService;
@@ -28,7 +30,7 @@ public class AnalyticsController {
     }
 
     @GetMapping("/totalClicks")
-    public long totalClicks(@RequestParam LocalDate dateFrom, @RequestParam LocalDate dateTo, AnalyticsCriteria analyticsCriteria) {
+    public List<AnalyticsData> totalClicks(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateFrom, @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) @RequestParam LocalDate dateTo, AnalyticsCriteria analyticsCriteria) {
         return analyticsService.getTotalClicks(dateFrom, dateTo, analyticsCriteria);
     }
 

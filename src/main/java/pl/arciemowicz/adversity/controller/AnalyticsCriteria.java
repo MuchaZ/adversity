@@ -19,4 +19,16 @@ public class AnalyticsCriteria {
                 && getFilterOnDimensions().isEmpty()
                 && getGroupByDimensions().isEmpty();
     }
+
+    public static AnalyticsCriteria getCriteriaForRetrievingTotalClicks(AnalyticsCriteria analyticsCriteria) {
+        final String clicksAggregation = "clicks";
+
+        List<String> aggregatedOn = analyticsCriteria.getMetricsToBeAggregatedOn();
+        if (!aggregatedOn.contains(clicksAggregation)) {
+            aggregatedOn.add(clicksAggregation);
+            analyticsCriteria.setMetricsToBeAggregatedOn(aggregatedOn);
+        }
+
+        return analyticsCriteria;
+    }
 }

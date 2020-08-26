@@ -1,6 +1,5 @@
 package pl.arciemowicz.adversity.service;
 
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import pl.arciemowicz.adversity.controller.AnalyticsCriteria;
 import pl.arciemowicz.adversity.domain.AnalyticsData;
@@ -22,6 +21,9 @@ public class AnalyticsServiceImpl implements AnalyticsService {
 
     @Override
     public List<AnalyticsData> getData(AnalyticsCriteria analyticsCriteria) {
+        if (analyticsCriteria.isEmpty()) {
+            return analyticsRepository.findAll();
+        }
         return analyticsRepository.findAllByCriteria(analyticsCriteria);
     }
 

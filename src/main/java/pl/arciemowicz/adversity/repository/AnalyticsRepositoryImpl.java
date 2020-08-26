@@ -55,9 +55,9 @@ public class AnalyticsRepositoryImpl implements AnalyticsRepositoryCustom {
 
         if (!projectedFields.isEmpty()) {
             aggregationOperations.add(Aggregation.project(projectedFields.toArray(new String[0])));
+            aggregationOperations.addAll(matchOperations);
         }
 
-        aggregationOperations.addAll(matchOperations);
         AggregationResults<AnalyticsData> groupResults = mongoTemplate.aggregate(Aggregation.newAggregation(aggregationOperations), databaseCollectionName, AnalyticsData.class);
 
         return groupResults.getMappedResults();

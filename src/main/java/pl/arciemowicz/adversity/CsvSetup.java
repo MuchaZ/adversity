@@ -22,6 +22,9 @@ import pl.arciemowicz.adversity.domain.AnalyticsData;
 @Configuration
 public class CsvSetup {
 
+    @Value("${data.file-name}")
+    private String dataFileName;
+
     @Value("${database.collection-name}")
     private String databaseCollectionName;
 
@@ -54,7 +57,7 @@ public class CsvSetup {
     @Bean
     public FlatFileItemReader<AnalyticsData> reader() {
         FlatFileItemReader<AnalyticsData> reader = new FlatFileItemReader<>();
-        reader.setResource(new ClassPathResource("data.csv"));
+        reader.setResource(new ClassPathResource(dataFileName));
         reader.setLinesToSkip(1);
         reader.setLineMapper(new DefaultLineMapper<AnalyticsData>() {{
             setLineTokenizer(new DelimitedLineTokenizer() {{

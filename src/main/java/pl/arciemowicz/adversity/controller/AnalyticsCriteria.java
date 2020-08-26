@@ -1,13 +1,16 @@
 package pl.arciemowicz.adversity.controller;
 
-import pl.arciemowicz.adversity.domain.dto.Dimensions;
-import pl.arciemowicz.adversity.domain.dto.Metrics;
 import lombok.Data;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Data
 public class AnalyticsCriteria {
 
-    private Metrics metrics;
-    private Dimensions groupByDimensions;
-    private Dimensions filterOnDimensions;
+    private List<String> metricsToBeAggregatedOn = new ArrayList<>();
+    private List<String> groupByDimensions = new ArrayList<>();
+    private Map<String, String> filterOnDimensions = new HashMap<>();
 }

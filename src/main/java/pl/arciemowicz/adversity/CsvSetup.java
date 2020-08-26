@@ -22,6 +22,9 @@ import pl.arciemowicz.adversity.domain.AnalyticsData;
 @Configuration
 public class CsvSetup {
 
+    @Value("${database.collection-name}")
+    private String databaseCollectionName;
+
     @Value("${csv-file.column-names}")
     private String[] columnNames;
 
@@ -69,7 +72,7 @@ public class CsvSetup {
     public MongoItemWriter<AnalyticsData> writer() {
         MongoItemWriter<AnalyticsData> writer = new MongoItemWriter<AnalyticsData>();
         writer.setTemplate(mongoTemplate);
-        writer.setCollection("analyticsData");
+        writer.setCollection(databaseCollectionName);
         return writer;
     }
 }

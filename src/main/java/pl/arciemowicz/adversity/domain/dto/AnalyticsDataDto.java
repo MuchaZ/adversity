@@ -1,5 +1,6 @@
 package pl.arciemowicz.adversity.domain.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Data;
 import pl.arciemowicz.adversity.domain.AnalyticsData;
@@ -9,6 +10,7 @@ import java.time.format.DateTimeFormatter;
 
 @Data
 @Builder
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class AnalyticsDataDto {
 
     private LocalDate date;
@@ -30,8 +32,11 @@ public class AnalyticsDataDto {
     }
 
     private static LocalDate getLocalDateFrom(String analyticsDataDate) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yy");
-        return LocalDate.parse(analyticsDataDate, formatter);
+        if (analyticsDataDate != null && !analyticsDataDate.isEmpty()) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yy");
+            return LocalDate.parse(analyticsDataDate, formatter);
+        }
+        return null;
     }
 
 }

@@ -81,8 +81,8 @@ public class AnalyticsRepositoryImpl implements AnalyticsRepositoryCustom {
                 projectionOperation = Aggregation.project(projectedFields.toArray(new String[0]));
             }
             aggregationOperations.add(projectionOperation);
-            aggregationOperations.addAll(matchOperations);
         }
+        aggregationOperations.addAll(matchOperations);
 
         return aggregationOperations;
     }

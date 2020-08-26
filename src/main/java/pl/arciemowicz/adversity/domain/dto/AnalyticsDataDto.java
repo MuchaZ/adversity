@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import pl.arciemowicz.adversity.domain.AnalyticsData;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
@@ -16,6 +17,7 @@ public class AnalyticsDataDto {
     private LocalDate date;
     private Dimensions dimensions;
     private Metrics metrics;
+    private BigDecimal ctr;
 
     public static AnalyticsDataDto buildFrom(AnalyticsData analyticsData) {
         return AnalyticsDataDto.builder()

@@ -5,14 +5,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import pl.arciemowicz.adversity.domain.AnalyticsData;
 import pl.arciemowicz.adversity.domain.dto.AnalyticsDataDto;
-import pl.arciemowicz.adversity.domain.dto.Impression;
 import pl.arciemowicz.adversity.service.AnalyticsService;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/analytics")
@@ -26,21 +23,18 @@ public class AnalyticsController {
 
     @GetMapping("/")
     public List<AnalyticsDataDto> analyticsData(AnalyticsCriteria analyticsCriteria) {
-        return analyticsService.getData(analyticsCriteria).stream().map(AnalyticsDataDto::buildFrom).collect(Collectors.toList());
+        return analyticsService.getData(analyticsCriteria);
     }
 
     @GetMapping("/totalClicks")
-    public List<AnalyticsData> totalClicks(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateFrom, @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) @RequestParam LocalDate dateTo, AnalyticsCriteria analyticsCriteria) {
+    public List<AnalyticsDataDto> totalClicks(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateFrom,
+                                           @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) @RequestParam LocalDate dateTo,
+                                           AnalyticsCriteria analyticsCriteria) {
         return analyticsService.getTotalClicks(dateFrom, dateTo, analyticsCriteria);
     }
 
     @GetMapping("/ctr")
-    public long ctr(AnalyticsCriteria analyticsCriteria) {
+    public List<AnalyticsDataDto> ctr(AnalyticsCriteria analyticsCriteria) {
         return analyticsService.getCtr(analyticsCriteria);
-    }
-
-    @GetMapping("/impressions")
-    public List<Impression> impressions(AnalyticsCriteria analyticsCriteria) {
-        return analyticsService.getImpressionsOverTime(analyticsCriteria);
     }
 }

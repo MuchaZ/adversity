@@ -1,10 +1,12 @@
 package pl.arciemowicz.adversity.domain;
 
+import lombok.Builder;
 import lombok.Data;
 
 import java.math.BigDecimal;
 
 @Data
+@Builder
 public class AnalyticsData {
 
     private String dataSource;
